@@ -3,6 +3,7 @@ import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { palette } from '@/components/huxuebao-ui';
 
@@ -19,8 +20,8 @@ function TabBarIcon({
 }) {
   return (
     <View style={[styles.tabItem, focused && styles.tabItemActive]}>
-      <Ionicons color={color} name={icon} size={16} />
-      <Text style={[styles.tabLabel, { color }]}>{label}</Text>
+      <Ionicons color={color} name={icon} size={28} />
+      <Text style={[styles.tabLabel, focused && styles.tabLabelActive, { color }]}>{label}</Text>
     </View>
   );
 }
@@ -64,7 +65,7 @@ export default function TabLayout() {
             <TabBarIcon
               color={color}
               focused={focused}
-              icon={focused ? 'sparkles' : 'sparkles-outline'}
+              icon={focused ? 'git-network' : 'git-network-outline'}
               label="演练"
             />
           ),
@@ -89,8 +90,12 @@ export default function TabLayout() {
 }
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View pointerEvents="box-none" style={styles.tabBarOuter}>
+    <View
+      pointerEvents="box-none"
+      style={[styles.tabBarOuter, { bottom: Math.max(insets.bottom, 12) + 8 }]}>
       <View style={styles.tabBar}>
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
@@ -101,7 +106,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           const iconMap: Record<string, React.ComponentProps<typeof Ionicons>['name']> = {
             index: isFocused ? 'home' : 'home-outline',
             course: isFocused ? 'book' : 'book-outline',
-            practice: isFocused ? 'sparkles' : 'sparkles-outline',
+            practice: isFocused ? 'git-network' : 'git-network-outline',
             report: isFocused ? 'stats-chart' : 'stats-chart-outline',
           };
 
@@ -143,41 +148,48 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 21,
     alignItems: 'center',
-    paddingHorizontal: 21,
+    paddingHorizontal: 18,
   },
   tabBar: {
     width: '100%',
-    maxWidth: 360,
-    height: 62,
-    borderRadius: 36,
-    paddingHorizontal: 4,
-    paddingTop: 4,
-    paddingBottom: 4,
+    maxWidth: 372,
+    minHeight: 96,
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: '#E8E4DD',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     backgroundColor: '#FFFFFF',
     shadowColor: '#1A1918',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.06,
+    shadowRadius: 18,
+    elevation: 8,
   },
   tabBarItem: {
     flex: 1,
-    height: 54,
+    minHeight: 74,
   },
   tabItem: {
     flex: 1,
-    borderRadius: 26,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
+    gap: 8,
+    paddingVertical: 12,
   },
   tabItemActive: {
     backgroundColor: palette.green,
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 16,
     fontWeight: '600',
+    lineHeight: 22,
+  },
+  tabLabelActive: {
+    fontWeight: '700',
   },
 });
